@@ -1,2 +1,5 @@
-# AAC
-a 'open-source, cross-platform' Augmentative &amp; Alternative Communication (AAC) app for a mobile phone 
+# Welcome!
+
+an 'open-source, cross-platform' Augmentative &amp; Alternative Communication (AAC) app for a mobile phone.
+
+
