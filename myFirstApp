@@ -1,0 +1,34 @@
+// Import necessary modules from the 'react' and 'react-native' libraries.
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
+// Define the main component named 'App'.
+const App = () => {
+  // Return JSX elements representing the UI of the component.
+  return (
+    // A container View that holds the Text component.
+    <View style={styles.container}>
+      {/* Text component displaying a message */}
+      <Text style={styles.text}>Hello, React Native!</Text>
+    </View>
+  );
+};
+
+// Define styles using the StyleSheet API for consistent styling.
+const styles = StyleSheet.create({
+  // Styles for the container View.
+  container: {
+    flex: 1,                     // Allow the container to occupy available space.
+    justifyContent: 'center',    // Center content vertically.
+    alignItems: 'center',        // Center content horizontally.
+    backgroundColor: '#f0f0f0',  // Set background color of the container.
+  },
+  // Styles for the text inside the Text component.
+  text: {
+    fontSize: 24,                // Set font size to 24 units.
+    color: 'blue',               // Set text color to blue.
+  },
+});
+
+// Export the main App component to make it accessible to other parts of the application.
+export default App;
