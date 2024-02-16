@@ -6,4 +6,6 @@ an 'open-source, cross-platform' Augmentative &amp; Alternative Communication (A
 
 This is intended for portability, and is not meant to replace exising AACs (and those already in use but a 'simple complement.'
 
+Have tried setting up the project wiki as both a reference and a 'collaboration tol.'
+
 
