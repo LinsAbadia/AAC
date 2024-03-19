@@ -6,6 +6,16 @@
 //
 
 import SwiftUI
+import Speech
+
+struct Voice: Identifiable, Hashable {
+    var id = UUID()
+    var voice: AVSpeechSynthesisVoice
+    
+    init(_ voice: AVSpeechSynthesisVoice) {
+        self.voice = voice
+    }
+}
 
 struct ContentView: View {
     private let initialReleaseDate = Date(timeIntervalSinceNow: -3000000)
@@ -14,6 +24,9 @@ struct ContentView: View {
     private let userName = "Lins"
     private let iconSize = 48.0
     @State private var currentTheme = themes[0]
+    private let synthesizer = AVSpeechSynthesizer()
+    private let voices: [Voice] = AVSpeechSynthesisVoice.speechVoices().filter({ $0.language.hasPrefix("en") }).map({ Voice($0) })
+    @State private var currentVoice = Voice(AVSpeechSynthesisVoice.speechVoices().first!)
     
     var body: some View {
         NavigationStack {
@@ -56,8 +69,17 @@ struct ContentView: View {
                         }
                     }
                     Spacer()
-                    MyButton("Process")
-                        .classicBordered()
+                    MyButton("Process") {
+                        let utterance = AVSpeechUtterance(string: "The quick brown fox jumped over the lazy dog.")
+                        utterance.rate = 0.5
+                        utterance.pitchMultiplier = 0.8
+                        utterance.postUtteranceDelay = 0.2
+                        utterance.volume = 0.8
+                        utterance.voice = currentVoice.voice
+                        
+                        synthesizer.speak(utterance)
+                    }
+                    .classicBordered()
                     Spacer()
                     Button {
                     } label: {
@@ -75,14 +97,28 @@ struct ContentView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Picker("Theme", selection: $currentTheme) {
-                        ForEach(themes) { theme in
-                            Text(theme.name)
-                                .tag(theme)
+                    Menu("Options") {
+                        Menu("Themes") {
+                            Picker("Themes", selection: $currentTheme) {
+                                ForEach(themes) { theme in
+                                    Text(theme.name)
+                                        .tag(theme)
+                                }
+                            }
+                            .tint(currentTheme.foregroundColor)
+                            .labelsHidden() // oddly, this left-aligns the selected value
+                        }
+                        Menu("Voices") {
+                            Picker("Voices", selection: $currentVoice) {
+                                ForEach(voices) { voice in
+                                    Text(voice.voice.name)
+                                        .tag(voice)
+                                }
+                            }
+                            .tint(currentTheme.foregroundColor)
+                            .labelsHidden() // oddly, this left-aligns the selected value
                         }
                     }
-                    .tint(currentTheme.foregroundColor)
-                    .labelsHidden() // oddly, this left-aligns the selected value
                 }
                 ToolbarItem(placement: .principal) {
                     Text("Home")
@@ -143,14 +179,19 @@ extension View {
 struct MyButton: View {
     private var stringKey: LocalizedStringKey? = nil
     private var imageName: String? = nil
+    private var action: (() -> Void)? = nil
     
-    init(_ stringKey: LocalizedStringKey? = nil, imageName: String? = nil) {
+    init(_ stringKey: LocalizedStringKey? = nil, imageName: String? = nil, action:(() -> Void)? = nil) {
         self.imageName = imageName
         self.stringKey = stringKey
+        self.action = action
     }
     
     var body: some View {
         Button {
+            if let action {
+                action()
+            }
         } label: {
             Group {
                 if let stringKey {
